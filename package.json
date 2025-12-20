@@ -1,4 +1,11 @@
 {
+  "main": "electron/main.js",
+  "scripts": {
+    "electron:dev": "electron .",
+    "electron:build": "electron-builder --config electron-builder.json",
+    "electron:build:dir": "electron-builder --dir --config electron-builder.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "devDependencies": {
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
