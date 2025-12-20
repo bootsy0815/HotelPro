@@ -1,11 +1,17 @@
 # -*- mode: python ; coding: utf-8 -*-
 # PyInstaller spec file for building server.exe
 
+import sys
+from pathlib import Path
+
 block_cipher = None
+
+# Get the backend directory
+backend_dir = Path(__file__).parent
 
 a = Analysis(
     ['server.py'],
-    pathex=[],
+    pathex=[str(backend_dir)],
     binaries=[],
     datas=[
         ('.env', '.'),
@@ -17,20 +23,36 @@ a = Analysis(
         'uvicorn.protocols',
         'uvicorn.protocols.http',
         'uvicorn.protocols.http.auto',
+        'uvicorn.protocols.http.h11_impl',
         'uvicorn.protocols.websockets',
         'uvicorn.protocols.websockets.auto',
+        'uvicorn.protocols.websockets.wsproto_impl',
         'uvicorn.lifespan',
         'uvicorn.lifespan.on',
+        'motor',
         'motor.motor_asyncio',
         'pymongo',
+        'bson',
+        'gridfs',
         'resend',
+        'email',
+        'email.mime',
         'email.mime.text',
         'email.mime.multipart',
+        'fastapi',
+        'starlette',
+        'pydantic',
+        'pydantic_core',
+        'dotenv',
     ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=[
+        'tkinter',
+        'unittest',
+        'test',
+    ],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
@@ -59,5 +81,4 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='../electron/assets/icon.ico'
 )
