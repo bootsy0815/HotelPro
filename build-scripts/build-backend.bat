@@ -6,10 +6,10 @@ echo ========================================
 cd backend
 
 echo Installing PyInstaller...
-pip install pyinstaller
+python -m pip install pyinstaller
 
 echo Building server.exe...
-pyinstaller build_exe.spec --clean
+python -m PyInstaller build_exe.spec --clean
 
 if exist "dist\server.exe" (
     echo.
