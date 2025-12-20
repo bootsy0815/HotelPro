@@ -1,0 +1,43 @@
+{
+  "appId": "com.hotelpro.app",
+  "productName": "HotelPro",
+  "copyright": "Copyright © 2025",
+  "directories": {
+    "buildResources": "electron/assets",
+    "output": "dist"
+  },
+  "files": [
+    "electron/**/*",
+    "frontend/build/**/*",
+    "!frontend/build/**/*.map"
+  ],
+  "extraResources": [
+    {
+      "from": "backend/dist",
+      "to": "backend"
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "electron/assets/icon.ico",
+    "artifactName": "${productName}-Setup-${version}.${ext}"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "HotelPro",
+    "installerIcon": "electron/assets/icon.ico",
+    "uninstallerIcon": "electron/assets/icon.ico",
+    "installerHeaderIcon": "electron/assets/icon.ico",
+    "license": "LICENSE.txt",
+    "language": "1031"
+  },
+  "publish": null
+}
