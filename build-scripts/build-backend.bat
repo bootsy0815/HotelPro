@@ -3,6 +3,7 @@ echo ========================================
 echo Building Backend Executable
 echo ========================================
 
+cd ..
 cd backend
 
 echo Installing PyInstaller...
