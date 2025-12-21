@@ -3,6 +3,8 @@ echo ========================================
 echo Building Windows Installer
 echo ========================================
 
+cd ..
+
 echo Step 1: Building Backend...
 call build-scripts\build-backend.bat
 if errorlevel 1 goto error
