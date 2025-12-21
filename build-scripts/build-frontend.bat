@@ -3,6 +3,7 @@ echo ========================================
 echo Building Frontend Production Build
 echo ========================================
 
+cd ..
 cd frontend
 
 echo Installing dependencies...
@@ -17,7 +18,7 @@ if exist "build\index.html" (
     echo ✓ Frontend built successfully!
     echo Location: frontend\build\
 ) else (
-    echo .
+    echo.
     echo ✗ Failed to build frontend!
     exit /b 1
 )
