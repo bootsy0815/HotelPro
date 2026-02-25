@@ -83,3 +83,7 @@ frontend/node_modules/.cache/default-development/5.pack
 frontend/node_modules/.cache/default-development/2.pack
 frontend/node_modules/.cache/default-development/1.pack
 node_modules/electron/dist/electron
+-e 
+# Environment files
+*.env
+*.env.*
