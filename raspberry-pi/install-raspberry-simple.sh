@@ -82,6 +82,10 @@ echo "✓ Nginx installiert"
 
 echo "Schritt 7/8: Backend einrichten..."
 cd "$APP_DIR/backend"
+
+# Besitzer auf pi setzen
+chown -R pi:pi "$APP_DIR"
+
 sudo -u pi python3 -m venv venv
 sudo -u pi bash -c "source venv/bin/activate && pip install -r requirements.txt"
 echo "✓ Backend Dependencies installiert"
@@ -92,6 +96,7 @@ cd "$APP_DIR/frontend"
 # .env Datei erstellen mit korrekter Backend-URL
 PI_IP=$(hostname -I | awk '{print $1}')
 echo "REACT_APP_BACKEND_URL=http://${PI_IP}:8001" > .env
+chown pi:pi .env
 
 sudo -u pi yarn install
 sudo -u pi bash -c "GENERATE_SOURCEMAP=false yarn build"
