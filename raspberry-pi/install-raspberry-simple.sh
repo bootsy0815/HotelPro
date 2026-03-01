@@ -17,8 +17,28 @@ if [ "$EUID" -ne 0 ]; then
    exit 1
 fi
 
+# Aktuelles Verzeichnis als APP_DIR verwenden
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+APP_DIR="$( cd "$SCRIPT_DIR/.." && pwd )"
 USER_HOME="/home/pi"
-APP_DIR="$USER_HOME/hotelpro"
+
+echo "Installation von: $APP_DIR"
+echo ""
+
+# Prüfen ob backend und frontend Ordner existieren
+if [ ! -d "$APP_DIR/backend" ]; then
+    echo "FEHLER: backend Ordner nicht gefunden in $APP_DIR"
+    echo "Bitte stellen Sie sicher, dass Sie das Script vom hotelpro-Verzeichnis aus ausführen"
+    exit 1
+fi
+
+if [ ! -d "$APP_DIR/frontend" ]; then
+    echo "FEHLER: frontend Ordner nicht gefunden in $APP_DIR"
+    exit 1
+fi
+
+echo "✓ Code-Verzeichnisse gefunden"
+echo ""
 
 echo "Schritt 1/8: System aktualisieren..."
 apt update && apt upgrade -y
