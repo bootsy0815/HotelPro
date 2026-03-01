@@ -36,14 +36,23 @@ echo "✓ Python $(python3 --version) installiert"
 
 echo "Schritt 4/10: MongoDB installieren..."
 if ! command -v mongod &> /dev/null; then
-    wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | apt-key add -
-    echo "deb [ arch=arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+    # Moderne Methode für GPG-Keys (apt-key ist deprecated)
+    curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | gpg --dearmor -o /usr/share/keyrings/mongodb-server-6.0.gpg
+    
+    # Repository mit signed-by hinzufügen
+    echo "deb [ arch=arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+    
     apt-get update
     apt-get install -y mongodb-org
+    
+    # MongoDB starten
     systemctl start mongod
     systemctl enable mongod
+    
+    echo "✓ MongoDB installiert"
+else
+    echo "✓ MongoDB bereits installiert"
 fi
-echo "✓ MongoDB installiert"
 
 echo "Schritt 5/10: Nginx installieren..."
 apt-get install -y nginx
