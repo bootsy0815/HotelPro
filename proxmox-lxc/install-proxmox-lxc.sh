@@ -349,16 +349,28 @@ echo "Nützliche Befehle:"
 echo "  Services neu starten:"
 echo "    systemctl restart hotelpro-backend"
 echo "    systemctl restart nginx"
-echo "    systemctl restart mongod"
+if [ "$MONGO_NATIVE" = true ]; then
+    echo "    systemctl restart mongod"
+else
+    echo "    docker restart hotelpro-mongodb"
+fi
 echo ""
 echo "  Logs anzeigen:"
 echo "    journalctl -u hotelpro-backend -f"
-echo "    journalctl -u mongod -f"
+if [ "$MONGO_NATIVE" = true ]; then
+    echo "    journalctl -u mongod -f"
+else
+    echo "    docker logs hotelpro-mongodb -f"
+fi
 echo ""
 echo "  Status prüfen:"
 echo "    systemctl status hotelpro-backend"
 echo "    systemctl status nginx"
-echo "    systemctl status mongod"
+if [ "$MONGO_NATIVE" = true ]; then
+    echo "    systemctl status mongod"
+else
+    echo "    docker ps | grep mongodb"
+fi
 echo ""
 echo "  LXC Ressourcen:"
 echo "    free -h              # RAM-Nutzung"
