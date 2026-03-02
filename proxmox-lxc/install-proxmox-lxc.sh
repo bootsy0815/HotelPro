@@ -291,7 +291,20 @@ sleep 5
 # Status prüfen
 BACKEND_STATUS=$(systemctl is-active hotelpro-backend)
 NGINX_STATUS=$(systemctl is-active nginx)
-MONGO_STATUS=$(systemctl is-active mongod)
+
+# MongoDB Status (unterschiedlich je nach Installation)
+if [ "$MONGO_NATIVE" = true ]; then
+    MONGO_STATUS=$(systemctl is-active mongod)
+    MONGO_TYPE="nativ"
+else
+    if docker ps 2>/dev/null | grep -q hotelpro-mongodb; then
+        MONGO_STATUS="active"
+        MONGO_TYPE="Docker"
+    else
+        MONGO_STATUS="inactive"
+        MONGO_TYPE="Docker"
+    fi
+fi
 
 echo ""
 echo "=========================================="
