@@ -55,6 +55,17 @@ echo "Schritt 4/10: Python 3 und Dependencies..."
 apt-get install -y python3 python3-pip python3-venv python3-dev build-essential
 echo "✓ Python $(python3 --version) bereit"
 
+echo "Schritt 5/10: MongoDB vorbereiten..."
+
+# Alte MongoDB Repositories entfernen
+echo "  Entferne alte MongoDB-Konfigurationen..."
+rm -f /etc/apt/sources.list.d/mongodb*.list 2>/dev/null || true
+rm -f /usr/share/keyrings/mongodb*.gpg 2>/dev/null || true
+rm -f /etc/apt/trusted.gpg.d/mongodb*.gpg 2>/dev/null || true
+
+# APT Cache aktualisieren
+apt-get update >/dev/null 2>&1 || true
+
 echo "Schritt 5/10: MongoDB installieren..."
 
 # Versuche zuerst native Installation
