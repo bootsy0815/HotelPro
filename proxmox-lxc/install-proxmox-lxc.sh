@@ -314,7 +314,7 @@ echo ""
 echo "Service Status:"
 echo "  Backend:  $BACKEND_STATUS"
 echo "  Nginx:    $NGINX_STATUS"
-echo "  MongoDB:  $MONGO_STATUS"
+echo "  MongoDB:  $MONGO_STATUS ($MONGO_TYPE)"
 echo ""
 
 if [ "$BACKEND_STATUS" = "active" ] && [ "$NGINX_STATUS" = "active" ] && [ "$MONGO_STATUS" = "active" ]; then
