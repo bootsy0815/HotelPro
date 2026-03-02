@@ -56,37 +56,74 @@ apt-get install -y python3 python3-pip python3-venv python3-dev build-essential
 echo "✓ Python $(python3 --version) bereit"
 
 echo "Schritt 5/10: MongoDB installieren..."
+
+# Versuche zuerst native Installation
+MONGO_NATIVE=false
+
 if ! command -v mongod &> /dev/null; then
-    echo "  Füge MongoDB Repository hinzu..."
+    echo "  Versuche native MongoDB Installation..."
     
-    # MongoDB GPG Key (moderne Methode)
-    curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg
+    # MongoDB GPG Key (neueste Methode ohne apt-key)
+    curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc 2>/dev/null | \
+        gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg 2>/dev/null || true
     
-    # MongoDB Repository für Debian 12/13 (Bookworm kompatibel)
-    echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/7.0 main" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list
-    
-    apt-get update
-    
-    # MongoDB installieren
-    DEBIAN_FRONTEND=noninteractive apt-get install -y mongodb-org
-    
-    # MongoDB starten und aktivieren
-    systemctl start mongod
-    systemctl enable mongod
-    
-    echo "  ✓ MongoDB 7.0 installiert"
-else
-    echo "  ✓ MongoDB bereits installiert"
-    systemctl start mongod 2>/dev/null || true
+    if [ -f /usr/share/keyrings/mongodb-server-7.0.gpg ]; then
+        # MongoDB Repository für Debian (Bookworm = Debian 12, kompatibel mit 13)
+        echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/7.0 main" | \
+            tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+        
+        # Repository Update (Fehler ignorieren)
+        apt-get update 2>/dev/null || true
+        
+        # MongoDB installieren (Fehler ignorieren)
+        if DEBIAN_FRONTEND=noninteractive apt-get install -y mongodb-org 2>/dev/null; then
+            systemctl start mongod 2>/dev/null && systemctl enable mongod 2>/dev/null
+            
+            if systemctl is-active --quiet mongod; then
+                MONGO_NATIVE=true
+                echo "  ✓ MongoDB 7.0 nativ installiert"
+            fi
+        fi
+    fi
 fi
 
-# MongoDB Status prüfen
-if systemctl is-active --quiet mongod; then
-    echo "  ✓ MongoDB läuft"
+# Falls native Installation fehlschlägt: Docker verwenden
+if [ "$MONGO_NATIVE" = false ] && ! systemctl is-active --quiet mongod 2>/dev/null; then
+    echo "  Native Installation fehlgeschlagen, verwende Docker..."
+    
+    # Docker installieren falls nicht vorhanden
+    if ! command -v docker &> /dev/null; then
+        echo "  Installiere Docker..."
+        curl -fsSL https://get.docker.com -o get-docker.sh
+        sh get-docker.sh >/dev/null 2>&1
+        rm get-docker.sh
+    fi
+    
+    # Alte MongoDB Container entfernen
+    docker stop hotelpro-mongodb 2>/dev/null || true
+    docker rm hotelpro-mongodb 2>/dev/null || true
+    
+    # MongoDB Container starten
+    docker run -d \
+        --name hotelpro-mongodb \
+        --restart always \
+        -p 27017:27017 \
+        -v hotelpro_mongodb_data:/data/db \
+        mongo:7.0 >/dev/null 2>&1
+    
+    echo "  Warte auf MongoDB Container Start..."
+    sleep 8
+    
+    if docker ps 2>/dev/null | grep -q hotelpro-mongodb; then
+        echo "  ✓ MongoDB 7.0 als Docker Container"
+        MONGO_NATIVE=false
+    else
+        echo "  ✗ FEHLER: MongoDB konnte nicht gestartet werden!"
+        exit 1
+    fi
 else
-    echo "  ⚠ MongoDB konnte nicht gestartet werden, versuche Neustart..."
-    systemctl restart mongod
-    sleep 3
+    MONGO_NATIVE=true
+    echo "  ✓ MongoDB läuft (nativ)"
 fi
 
 echo "Schritt 6/10: Nginx installieren..."
