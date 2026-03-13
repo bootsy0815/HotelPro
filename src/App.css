@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.App {
+  min-height: 100vh;
+  background-color: #fafaf9;
+}
+
+/* Smooth transitions for interactive elements */
+button, a, input, select, textarea {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Calendar styling */
+.rbc-calendar {
+  font-family: 'Inter', sans-serif;
+}
+
+.rbc-event {
+  background-color: #0f172a;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+.rbc-event:hover {
+  background-color: #1e293b;
+}
+
+.rbc-today {
+  background-color: #ecfccb;
+}
+
+.rbc-header {
+  padding: 8px;
+  font-weight: 600;
+  border-bottom: 2px solid #e7e5e4;
+}
